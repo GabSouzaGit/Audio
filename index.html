@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+        #quad {
+            background-color: black;
+            height: 100px;
+            width: 100px;
+            padding: 10px;
+        }
+
+        .animate {
+            font-weight: bold;
+            animation: mutate 0.6s linear infinite;
+        }
+
+        @keyframes mutate {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        progress {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button id="music"> Tocar... </button> <br>
+    <input type="range" min="0" max="9" id="range"> <hr>
+    <div id="quad"></div>
+    <input type="range" min="0" max="360" id="color"> <hr>
+    <button id="init"> Iniciar proresso </button> <br>
+    <progress value="0" max="200"></progress>
+    <div id="result"> Resultado: </div> <div id="num"> 0 </div>
+    <script>
+        var ad = new Audio("teste.mp3");
+        var btn = document.querySelector("#music");
+        var vol = document.querySelector("#range");
+        function getValue(ipt){
+            return ipt.value.toString();
+        }
+        btn.addEventListener('click', () => {
+            ad.play();
+        });
+        vol.addEventListener('change', () => {
+            var valueStr = getValue(vol);
+            var decimal = "0." + valueStr;
+            ad.volume = Number(decimal);
+        });
+
+        var color = document.querySelector("#color");
+        var square = document.querySelector("#quad");
+        color.addEventListener('change', () => {
+            square.style.backgroundColor = `hsl(${color.value}, 100%, 50%)`;
+            square.textContent = color.value;
+        });
+
+        var initProgress = document.querySelector("#init");
+        var progressBar = document.querySelector("progress");
+        var legend = document.querySelector("#result");
+        var num = document.querySelector("#num");
+        var colors;
+        initProgress.addEventListener('click', () => {
+            var hsl = 0;
+            num.style.color = "black";
+            progressBar.value = 0;
+            num.classList.remove("animate");
+            clearInterval(colors);
+            legend.textContent = "Em progresso: "
+            var itn = setInterval(() => {
+                progressBar.value++;
+                num.textContent = progressBar.value;
+                if(progressBar.value == 200){
+                    clearInterval(itn);
+                    legend.textContent = "Acabou!"; 
+                    num.classList.add("animate");
+                    colors = setInterval(async () => {
+                        hsl++;
+                        num.style.color = `hsl(${hsl}, 100%, 40%)`;
+                    }, 1);
+                }
+            }, 50);
+        });
+    </script>
+</body>
+</html>
